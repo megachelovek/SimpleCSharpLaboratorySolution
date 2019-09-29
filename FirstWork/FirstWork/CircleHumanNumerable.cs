@@ -2,6 +2,10 @@
 
 namespace FirstExam
 {
+    /// <summary>
+    /// Задание не готово к проверке.
+    /// Нет точки входа, непонятно, как вообще оно проверялось. В тестах дохлая зависимость FirstExam.
+    /// </summary>
     public static class CircleHumanNumerable
     {
         public static IList<int> StartCounting(IList<int> listOfHuman)
