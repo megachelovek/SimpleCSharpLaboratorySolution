@@ -12,10 +12,12 @@ namespace FirstExamTests
         public void RunCircleHumanNumerable()
         {
             Console.WriteLine("Start");
-            var count = 10; // Изменять здесь
-            var testArray = new List<int>(count);
+
+            var amountHuman = 10; // Изменять здесь
+
+            var testArray = new List<int>(amountHuman);
             Console.WriteLine("===");
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < amountHuman; i++)
             {
                 testArray.Add(i + 1);
                 Console.WriteLine(testArray[i]);
