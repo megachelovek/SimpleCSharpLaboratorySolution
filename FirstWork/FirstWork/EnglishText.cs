@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FirstExam
+namespace FirstWork
 {
     public static class EnglishText
     {

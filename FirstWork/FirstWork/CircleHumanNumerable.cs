@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FirstExam
+namespace FirstWork
 {
     /// <summary>
     /// Задание не готово к проверке.
