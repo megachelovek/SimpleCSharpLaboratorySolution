@@ -128,7 +128,7 @@ namespace FirstExamTests
             ParameterExpression resultExpression = Expression.Parameter(typeof(string), "result");
             LabelTarget label = Expression.Label(typeof(string));
 
-            var action = Expression.Block(
+            var action = Expression.Block( // Сделать  нормальный блок
                 new[] { resultExpression },
                 Expression.Assign(resultExpression, Expression.Constant("")),
                 Expression.Loop(
@@ -140,6 +140,8 @@ namespace FirstExamTests
                 label
                 )
             );
+
+            Expression<Func<string, string>> action2 = f => f + 3; // Забрать эту штуку
             
             var result = MyExtensions.FindInArrayLinqExpression(action, valueExpression, stringList);
             Console.WriteLine($"Result= {result}");
