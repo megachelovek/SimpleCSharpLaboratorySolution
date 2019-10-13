@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using System.Linq.Expressions;
 
 namespace MySpecialList
 {
-    public class DynamicArray : IEnumerable<object>, IEnumerator
+    public class DynamicArray<T> : IEnumerable<T>, IEnumerator
     {
         /// <summary>
-        /// Объект перечисления списка
+        ///     Объект перечисления списка
         /// </summary>
-        private readonly DynamicArrayNumerator _trashListNumerator;
+        private readonly DynamicArrayNumerator<T> _trashListNumerator;
 
         public DynamicArray()
         {
-            _trashListNumerator = new DynamicArrayNumerator();
+            _trashListNumerator = new DynamicArrayNumerator<T>();
             _trashListNumerator.NumenatorIterator = 0;
         }
 
         public DynamicArray(int count)
         {
-            _trashListNumerator = new DynamicArrayNumerator(count);
+            _trashListNumerator = new DynamicArrayNumerator<T>(count);
             _trashListNumerator.NumenatorIterator = 0;
         }
 
@@ -29,14 +29,13 @@ namespace MySpecialList
             IEnumerator enumerator = collection.GetEnumerator();
             enumerator.Reset();
             var countOfCollection = GetCountOfCollection(collection);
-            _trashListNumerator = new DynamicArrayNumerator(countOfCollection);
+            _trashListNumerator = new DynamicArrayNumerator<T>(countOfCollection);
             _trashListNumerator.NumenatorArray = new object[countOfCollection];
             for (var i = 0; i < countOfCollection; i++)
             {
                 enumerator.MoveNext();
                 _trashListNumerator.NumenatorArray[i] = enumerator.Current;
             }
-            
         }
 
         /// <summary>
@@ -47,27 +46,28 @@ namespace MySpecialList
         /// <summary>
         ///     Реальная текущая вместимость
         /// </summary>
-        public int Capacity => _trashListNumerator.NumenatorArray.Length+1;
+        public int Capacity => _trashListNumerator.NumenatorArray.Length + 1;
 
-        IEnumerator<object> IEnumerable<object>.GetEnumerator()
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
-            return this._trashListNumerator;
+            return _trashListNumerator;
         }
 
         public IEnumerator GetEnumerator()
         {
-            return this._trashListNumerator; // Подумать точно так реализовано или нет
+            return _trashListNumerator; // Подумать точно так реализовано или нет
         }
 
         /// <summary>
         ///     Возвращает текущий элемент
         /// </summary>
-        public object Current => _trashListNumerator.NumenatorArray[_trashListNumerator.NumenatorIterator];
+        public object Current => _trashListNumerator.Current;
 
         public bool MoveNext()
         {
             return _trashListNumerator.MoveNext();
         }
+
 
         /// <summary>
         ///     Сбрасывает индекс-счетчик на начало
@@ -93,10 +93,16 @@ namespace MySpecialList
             {
                 var trashList = new object[_trashListNumerator.NumenatorArray.Length * 2];
                 _trashListNumerator.NumenatorArray.CopyTo(trashList, 0);
+                _trashListNumerator.NumenatorArray = trashList;
                 _trashListNumerator.NumenatorArray[_trashListNumerator.countOfAddableElements] = newObject;
                 _trashListNumerator.NumenatorIterator++;
                 _trashListNumerator.countOfAddableElements++;
             }
+        }
+
+        internal int[] Where(Expression expressionIn)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -107,7 +113,8 @@ namespace MySpecialList
         {
             var countNewCollection = GetCountOfCollection(collection);
             var newCollection = new object[countNewCollection + _trashListNumerator.NumenatorArray.Length];
-            for (var i = 0; i < _trashListNumerator.NumenatorArray.Length; i++) newCollection[i] = _trashListNumerator.NumenatorArray[i];
+            for (var i = 0; i < _trashListNumerator.NumenatorArray.Length; i++)
+                newCollection[i] = _trashListNumerator.NumenatorArray[i];
             var enumerator = collection.GetEnumerator();
             enumerator.Reset();
             var index = _trashListNumerator.NumenatorArray.Length;
@@ -115,9 +122,11 @@ namespace MySpecialList
             {
                 newCollection[index] = enumerator.Current;
                 index++;
-            } 
+            }
+
             _trashListNumerator.NumenatorArray = newCollection;
-            _trashListNumerator.countOfAddableElements = _trashListNumerator.countOfAddableElements + countNewCollection;
+            _trashListNumerator.countOfAddableElements =
+                _trashListNumerator.countOfAddableElements + countNewCollection;
         }
 
         /// <summary>
@@ -131,7 +140,8 @@ namespace MySpecialList
             {
                 var newArray = new object[_trashListNumerator.NumenatorArray.Length - 1];
                 for (var i = 0; i < index; i++) newArray[i] = _trashListNumerator.NumenatorArray[i];
-                for (var i = index; i < _trashListNumerator.NumenatorArray.Length-1; i++) newArray[i] = _trashListNumerator.NumenatorArray[i+1];
+                for (var i = index; i < _trashListNumerator.NumenatorArray.Length - 1; i++)
+                    newArray[i] = _trashListNumerator.NumenatorArray[i + 1];
                 _trashListNumerator.NumenatorArray = newArray;
                 _trashListNumerator.countOfAddableElements--;
                 return true;
@@ -164,7 +174,8 @@ namespace MySpecialList
 
                 newCollection[index] = obj;
 
-                for (var i = index + 1; i < newCollection.Length; i++) newCollection[i] = _trashListNumerator.NumenatorArray[i - 1];
+                for (var i = index + 1; i < newCollection.Length; i++)
+                    newCollection[i] = _trashListNumerator.NumenatorArray[i - 1];
                 _trashListNumerator.NumenatorArray = newCollection;
                 _trashListNumerator.countOfAddableElements++;
                 return true;
@@ -174,7 +185,7 @@ namespace MySpecialList
         }
 
         /// <summary>
-        /// Получение количества элементов в коллекции
+        ///     Получение количества элементов в коллекции
         /// </summary>
         /// <param name="collection">Коллекция для проверки</param>
         /// <returns>Количество элементов</returns>
@@ -183,24 +194,13 @@ namespace MySpecialList
             var countOfElements = 0;
             IEnumerator enumerator = collection.GetEnumerator();
             enumerator.Reset();
-            while (enumerator.MoveNext())
-            {
-                countOfElements ++;
-            } 
+            while (enumerator.MoveNext()) countOfElements++;
 
             return countOfElements;
         }
-        
-        private class DynamicArrayNumerator : IEnumerator<object>
+
+        private class DynamicArrayNumerator<T> : IEnumerator<T>
         {
-            public int countOfAddableElements { get; set; }
-
-            public object[] NumenatorArray { get; set; }
-
-            public int NumenatorIterator { get; set; }
-
-            public object Current => NumenatorArray[NumenatorIterator];
-
             public DynamicArrayNumerator()
             {
                 NumenatorIterator = 0;
@@ -222,12 +222,18 @@ namespace MySpecialList
                 countOfAddableElements = 0;
             }
 
+            public int countOfAddableElements { get; set; }
+
+            public object[] NumenatorArray { get; set; }
+
+            public int NumenatorIterator { get; set; }
+
+            public T Current => (T) NumenatorArray[NumenatorIterator];
+
             public bool MoveNext()
             {
-                if (NumenatorArray.Length-1 == NumenatorIterator)
-                {
+                if (NumenatorArray.Length - 1 == NumenatorIterator || NumenatorArray[NumenatorIterator + 1] == null)
                     return false;
-                }
 
                 NumenatorIterator++;
                 return true;
@@ -237,6 +243,9 @@ namespace MySpecialList
             {
                 NumenatorIterator = 0;
             }
+
+            object IEnumerator.Current => Current;
+
 
             public void Dispose()
             {

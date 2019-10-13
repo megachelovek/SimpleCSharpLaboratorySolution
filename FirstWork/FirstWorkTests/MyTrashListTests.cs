@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using FirstWork;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MySpecialList;
 
@@ -14,7 +13,7 @@ namespace FirstExamTests
         {
             Console.WriteLine("Start");
 
-            DynamicArray dynamicArray = new DynamicArray(5);
+            var dynamicArray = new DynamicArray<string>(5);
             dynamicArray.Add("elem1");
             dynamicArray.Add("elem2");
             dynamicArray.Add("elem3");
@@ -29,13 +28,13 @@ namespace FirstExamTests
         {
             Console.WriteLine("Start");
 
-            DynamicArray dynamicArray = new DynamicArray(5);
+            var dynamicArray = new DynamicArray<string>(5);
             dynamicArray.Add("elem1");
             dynamicArray.Add("elem2");
             dynamicArray.Add("elem3");
             dynamicArray.Add("elem4");
             dynamicArray.Add("elem5");
-            DynamicArray dynamicArray2 = new DynamicArray(5);
+            var dynamicArray2 = new DynamicArray<string>(5);
             dynamicArray2.Add("elem6");
             dynamicArray2.Add("elem7");
             dynamicArray2.Add("elem8");
@@ -53,7 +52,7 @@ namespace FirstExamTests
         {
             Console.WriteLine("Start");
 
-            DynamicArray dynamicArray = new DynamicArray(5);
+            var dynamicArray = new DynamicArray<string>(5);
             dynamicArray.Add("elem1");
             dynamicArray.Add("elem2");
             dynamicArray.Add("elem3");
@@ -71,14 +70,14 @@ namespace FirstExamTests
         {
             Console.WriteLine("Start");
 
-            DynamicArray dynamicArray = new DynamicArray(5);
+            var dynamicArray = new DynamicArray<string>(5);
             dynamicArray.Add("elem1");
             dynamicArray.Add("elem2");
             dynamicArray.Add("elem3");
             dynamicArray.Add("elem4");
             dynamicArray.Add("elem5");
 
-            dynamicArray.Insert("newSuperElement",3);
+            dynamicArray.Insert("newSuperElement", 3);
 
             ShowList(dynamicArray);
             Console.WriteLine("END");
@@ -88,20 +87,20 @@ namespace FirstExamTests
         public void CreateFromCollectionList()
         {
             Console.WriteLine("Start");
-            List<string> list= new List<string>();
+            var list = new List<string>();
             list.Add("elem1");
             list.Add("elem2");
             list.Add("elem3");
             list.Add("elem4");
             list.Add("elem5");
 
-            DynamicArray dynamicArray = new DynamicArray(list);
+            var dynamicArray = new DynamicArray<string>(list);
 
             ShowList(dynamicArray);
             Console.WriteLine("END");
         }
 
-        private static void ShowList(DynamicArray dynamicArray)
+        private static void ShowList(DynamicArray<string> dynamicArray)
         {
             if (dynamicArray != null)
             {
